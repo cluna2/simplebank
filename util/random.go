@@ -34,9 +34,9 @@ func RandomOwner() string {
 	return RandomString(6)
 }
 
-// generates a random account balance between 0 and 1000
+// generates a random account balance between 1 and 1000
 func RandomMoney() int64 {
-	return RandomInt(0, 1000)
+	return RandomInt(1, 1000)
 }
 
 // generates a random currency code
