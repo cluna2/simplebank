@@ -235,7 +235,7 @@ func TestCreateTransferAPI(t *testing.T) {
 			tc.buildStubs(store)
 
 			// start test server, create recorder
-			server := NewServer(store)
+			server := newTestServer(t, store)
 			recorder := httptest.NewRecorder()
 
 			// marshal request body data to JSON
