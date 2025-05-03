@@ -1,2 +1,3 @@
 # Ignore vs code workspace files
 *.code-workspace
+*.log
