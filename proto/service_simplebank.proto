@@ -5,6 +5,7 @@ package pb;
 import "google/api/annotations.proto";
 import "rpc_create_user.proto";
 import "rpc_login_user.proto";
+import "rpc_update_user.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
 option go_package = "github.com/cluna2/simplebank/pb";
@@ -12,7 +13,7 @@ option go_package = "github.com/cluna2/simplebank/pb";
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
     info: {
         title: "Simple Bank API";
-        version: "1.1";
+        version: "1.2";
         contact: {
             name: "Cristian Luna";
             url: "https://github.com/cluna2";
@@ -41,4 +42,17 @@ service Simplebank {
             summary: "Login user"
         };
     }
+
+    rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse) {
+        option (google.api.http) = {
+            patch: "/v1/update_user"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Used to update a user's full name, email, and/or password"
+            summary: "Update user"
+        };
+    }
+
+
 }
