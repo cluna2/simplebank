@@ -15,6 +15,7 @@ import (
 	db "github.com/cluna2/simplebank/db/sqlc"
 	_ "github.com/cluna2/simplebank/doc/statik"
 	"github.com/cluna2/simplebank/gapi"
+	"github.com/cluna2/simplebank/mail"
 	"github.com/cluna2/simplebank/pb"
 	"github.com/cluna2/simplebank/util"
 	"github.com/cluna2/simplebank/worker"
@@ -54,7 +55,7 @@ func main() {
 	}
 
 	taskDistributor := worker.NewRedisTaskDistributor(redisOpt)
-	go runTaskProcesssor(redisOpt, store)
+	go runTaskProcesssor(config, redisOpt, store)
 	go runGatewayServer(config, store, taskDistributor)
 	runGrpcServer(config, store, taskDistributor)
 
@@ -73,8 +74,9 @@ func runDBMigration(migrationURL string, dbSource string) {
 	log.Info().Msg("db migrated successfully")
 }
 
-func runTaskProcesssor(redisOpt asynq.RedisClientOpt, store db.Store) {
-	taskProcessor := worker.NewRedisTaskProcessor(redisOpt, store)
+func runTaskProcesssor(config util.Config, redisOpt asynq.RedisClientOpt, store db.Store) {
+	mailer := mail.NewGmailSender(config.EmailSenderName, config.EmailSenderAddress, config.EmailSenderPassword)
+	taskProcessor := worker.NewRedisTaskProcessor(redisOpt, store, mailer)
 	log.Info().Msg("start task processor")
 	err := taskProcessor.Start()
 	if err != nil {

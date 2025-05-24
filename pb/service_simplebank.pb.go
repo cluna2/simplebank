@@ -26,7 +26,7 @@ var File_service_simplebank_proto protoreflect.FileDescriptor
 
 const file_service_simplebank_proto_rawDesc = "" +
 	"\n" +
-	"\x18service_simplebank.proto\x12\x02pb\x1a\x1cgoogle/api/annotations.proto\x1a\x15rpc_create_user.proto\x1a\x14rpc_login_user.proto\x1a\x15rpc_update_user.proto\x1a.protoc-gen-openapiv2/options/annotations.proto2\xd2\x03\n" +
+	"\x18service_simplebank.proto\x12\x02pb\x1a\x1cgoogle/api/annotations.proto\x1a\x15rpc_create_user.proto\x1a\x14rpc_login_user.proto\x1a\x15rpc_update_user.proto\x1a\x16rpc_verify_email.proto\x1a.protoc-gen-openapiv2/options/annotations.proto2\xeb\x04\n" +
 	"\n" +
 	"Simplebank\x12\x86\x01\n" +
 	"\n" +
@@ -34,27 +34,32 @@ const file_service_simplebank_proto_rawDesc = "" +
 	"\tLoginUser\x12\x14.pb.LoginUserRequest\x1a\x15.pb.LoginUserResponse\"[\x92A?\x12\n" +
 	"Login user\x1a1Used to login a user and get access/refresh token\x82\xd3\xe4\x93\x02\x13:\x01*\"\x0e/v1/login_user\x12\xa2\x01\n" +
 	"\n" +
-	"UpdateUser\x12\x15.pb.UpdateUserRequest\x1a\x16.pb.UpdateUserResponse\"e\x92AH\x12\vUpdate user\x1a9Used to update a user's full name, email, and/or password\x82\xd3\xe4\x93\x02\x14:\x01*2\x0f/v1/update_userBh\x92AD\x12B\n" +
+	"UpdateUser\x12\x15.pb.UpdateUserRequest\x1a\x16.pb.UpdateUserResponse\"e\x92AH\x12\vUpdate user\x1a9Used to update a user's full name, email, and/or password\x82\xd3\xe4\x93\x02\x14:\x01*2\x0f/v1/update_user\x12\x96\x01\n" +
+	"\vVerifyEmail\x12\x16.pb.VerifyEmailRequest\x1a\x17.pb.VerifyEmailResponse\"V\x92A;\x12\fVerify email\x1a+Use this API to verify user's email address\x82\xd3\xe4\x93\x02\x12\x12\x10/v1/verify_emailBh\x92AD\x12B\n" +
 	"\x0fSimple Bank API\"*\n" +
 	"\rCristian Luna\x12\x19https://github.com/cluna22\x031.2Z\x1fgithub.com/cluna2/simplebank/pbb\x06proto3"
 
 var file_service_simplebank_proto_goTypes = []any{
-	(*CreateUserRequest)(nil),  // 0: pb.CreateUserRequest
-	(*LoginUserRequest)(nil),   // 1: pb.LoginUserRequest
-	(*UpdateUserRequest)(nil),  // 2: pb.UpdateUserRequest
-	(*CreateUserResponse)(nil), // 3: pb.CreateUserResponse
-	(*LoginUserResponse)(nil),  // 4: pb.LoginUserResponse
-	(*UpdateUserResponse)(nil), // 5: pb.UpdateUserResponse
+	(*CreateUserRequest)(nil),   // 0: pb.CreateUserRequest
+	(*LoginUserRequest)(nil),    // 1: pb.LoginUserRequest
+	(*UpdateUserRequest)(nil),   // 2: pb.UpdateUserRequest
+	(*VerifyEmailRequest)(nil),  // 3: pb.VerifyEmailRequest
+	(*CreateUserResponse)(nil),  // 4: pb.CreateUserResponse
+	(*LoginUserResponse)(nil),   // 5: pb.LoginUserResponse
+	(*UpdateUserResponse)(nil),  // 6: pb.UpdateUserResponse
+	(*VerifyEmailResponse)(nil), // 7: pb.VerifyEmailResponse
 }
 var file_service_simplebank_proto_depIdxs = []int32{
 	0, // 0: pb.Simplebank.CreateUser:input_type -> pb.CreateUserRequest
 	1, // 1: pb.Simplebank.LoginUser:input_type -> pb.LoginUserRequest
 	2, // 2: pb.Simplebank.UpdateUser:input_type -> pb.UpdateUserRequest
-	3, // 3: pb.Simplebank.CreateUser:output_type -> pb.CreateUserResponse
-	4, // 4: pb.Simplebank.LoginUser:output_type -> pb.LoginUserResponse
-	5, // 5: pb.Simplebank.UpdateUser:output_type -> pb.UpdateUserResponse
-	3, // [3:6] is the sub-list for method output_type
-	0, // [0:3] is the sub-list for method input_type
+	3, // 3: pb.Simplebank.VerifyEmail:input_type -> pb.VerifyEmailRequest
+	4, // 4: pb.Simplebank.CreateUser:output_type -> pb.CreateUserResponse
+	5, // 5: pb.Simplebank.LoginUser:output_type -> pb.LoginUserResponse
+	6, // 6: pb.Simplebank.UpdateUser:output_type -> pb.UpdateUserResponse
+	7, // 7: pb.Simplebank.VerifyEmail:output_type -> pb.VerifyEmailResponse
+	4, // [4:8] is the sub-list for method output_type
+	0, // [0:4] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -68,6 +73,7 @@ func file_service_simplebank_proto_init() {
 	file_rpc_create_user_proto_init()
 	file_rpc_login_user_proto_init()
 	file_rpc_update_user_proto_init()
+	file_rpc_verify_email_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
