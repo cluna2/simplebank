@@ -1,10 +1,13 @@
 package db
 
-import "context"
+import (
+	"context"
+	"fmt"
+)
 
 type CreateUserTxParams struct {
 	CreateUserParams
-	AfterCreate func(user User) error
+	AfterCreate func(user User) error // callback to run after user is successfully created
 }
 
 type CreateUserTxResult struct {
@@ -19,6 +22,7 @@ func (store *SQLStore) CreateUserTx(ctx context.Context, arg CreateUserTxParams)
 
 		result.User, err = q.CreateUser(ctx, arg.CreateUserParams)
 		if err != nil {
+			fmt.Printf("err: %s\n", err)
 			return err
 		}
 
