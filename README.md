@@ -53,3 +53,34 @@ This project incorporates a diverse set of technologies and concepts essential f
   <p> A Makefile is used to automate several tasks related to the project, such as pulling and starting Docker images, create and migrate the database, and compiling the service. This also has the benefit of making collaboration in a team setting easier by reducing setup time to running a few .PHONY targets. </p>
  
 </details>
+
+<details>
+  <summary> Database Migrations </summary>
+  <p> Typically in enterprise applications, business requirements change and induce updates to the database schema. To keep track of migrations, I use Golang's migrate library. Updates to the schema in SQL can be found in db/migration. </p>
+</details>
+
+
+<details>
+ <summary> CRUD code from SQL </summary>
+ <p> Various libraries exist to communicate with the database in Go such as database/sql, sqlx, and Gorm. For this project, I use sqlc which allows me to take SQL queries and generate type-safe Golang code\ from them. Then my application code can call those methods that sqlc generated. This not only simplifies database communication like ORMs typically do,
+ but also helps catch incorrect SQL queries early during compliation. </p>
+</details>
+
+<details> 
+  <summary> Unit Tests for CRUD operations. </summary>
+  <p> Writing unit tests for the database operations was done using Go's testing package and Testify's require package (for assertions). Later unit tests for APIs will make use of mocking. </p>
+</details>
+
+<details> 
+  <summary> CI/CD setup with Github Actions. </summary>
+  <p> Github Actions allowed me to create a CI/CD pipeline by automating some tasks to test and eventually deploy the service. To start, with I created some .yaml files to pull in a Postgres service, Go, and the migrate library before running the unit tests I created. Later, I will expand this pipeline using AWS. The .yaml files are found under .github/workflows </p>
+</details>
+
+<details> 
+  <summary> DB Transaction Locks and Handling Deadlocks </summary>
+  <p> Deadlocks were occuring when running certain queries to update account balances or when performing a transfer. To combat this, I updated some SQL queries with the 'FOR NO KEY UPDATE' clause to inform Postgres to not modify foreign keys. In addition, I force a consistent ordering on queries to first lock accounts with a smaller ID before locking accounts with larger IDs. This reduces the risk of different transactions attempting to simultaneously lock mutually referenced accounts which casuses deadlocks. Enforcing a 'Repeatable Read' isolation level also helps maintain data consistency, which is critical in banking applications like this service. </p>
+</details>
+
+### 2. Building RESTful HTTP APIs
+
+
