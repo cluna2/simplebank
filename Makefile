@@ -6,6 +6,9 @@ pull_postgres:
 pull_redis:
 	docker pull redis:latest
 
+network: 
+	docker network create bank-network
+
 postgres:
 	docker run --name postgres17 --network bank-network -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:17-alpine
 
@@ -65,7 +68,7 @@ evans:
 
 
 redis: 
-	docker run --name redis -p 6379:6379 -d redis:latest
+	docker run --name redis -p 6379:6379 -d redis:7-alpine
 
 clean_postgres:
 	docker stop postgres17
@@ -78,7 +81,7 @@ clean_redis:
 	docker rmi redis
 	
 
-build:
+build_local:
 	make pull_postgres
 	make postgres
 	sleep 1
