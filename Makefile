@@ -1,7 +1,13 @@
 DB_URL=postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable
 
+pull_postgres:
+	docker pull postgres:17-alpine
+
+pull_redis:
+	docker pull redis:latest
+
 postgres:
-	docker run --name postgres17 --network bank-network -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres
+	docker run --name postgres17 --network bank-network -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:17-alpine
 
 createdb: 
 	docker exec -it postgres17 createdb --username=root --owner=root simple_bank
@@ -61,8 +67,27 @@ evans:
 redis: 
 	docker run --name redis -p 6379:6379 -d redis:latest
 
-clean:
+clean_postgres:
 	docker stop postgres17
 	docker remove postgres17
+	docker rmi postgres:17-alpine
 
-.PHONY: postgres createdb dropdb migrateup migrateup1 migratedown migratedown1 new_migration db_docs db_schema sqlc test server mock proto evans clean
+clean_redis:
+	docker stop redis
+	docker remove redis
+	docker rmi redis
+	
+
+build:
+	make pull_postgres
+	make postgres
+	sleep 1
+	make createdb
+	make migrateup
+	make sqlc
+	make mock
+	make proto
+	make pull_redis
+	make redis
+	
+.PHONY: postgres createdb dropdb migrateup migrateup1 migratedown migratedown1 new_migration db_docs db_schema sqlc test server mock proto evans clean_postgres clean_redis build

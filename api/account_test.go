@@ -17,7 +17,7 @@ import (
 	"github.com/cluna2/simplebank/util"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
-	"github.com/lib/pq"
+
 	"github.com/stretchr/testify/require"
 )
 
@@ -91,7 +91,7 @@ func TestGetAccountAPI(t *testing.T) {
 				store.EXPECT().
 					GetAccount(gomock.Any(), gomock.Eq(account.ID)).
 					Times(1).
-					Return(db.Account{}, sql.ErrNoRows)
+					Return(db.Account{}, db.ErrRecordNotFound)
 			},
 			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
 				require.Equal(t, http.StatusNotFound, recorder.Code)
@@ -238,7 +238,7 @@ func TestCreateAccountAPI(t *testing.T) {
 				store.EXPECT().
 					CreateAccount(gomock.Any(), gomock.Eq(arg)).
 					Times(1).
-					Return(account, &pq.Error{Code: "23505"})
+					Return(account, db.ErrUniqueViolation)
 
 			},
 			checkResponse: func(recorder *httptest.ResponseRecorder) {
