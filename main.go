@@ -223,7 +223,7 @@ func runGatewayServer(
 		<-ctx.Done()
 		log.Info().Msg("graceful shutdown of HTTP gateway server")
 
-		httpServer.Shutdown(context.Background())
+		err := httpServer.Shutdown(context.Background())
 		if err != nil {
 			log.Error().Err(err).Msg("failed to shutdown HTTP server")
 			return err

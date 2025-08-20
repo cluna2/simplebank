@@ -4,19 +4,19 @@ pull_postgres:
 	docker pull postgres:17-alpine
 
 pull_redis:
-	docker pull redis:latest
+	docker pull redis:7-alpine
 
 network: 
 	docker network create bank-network
 
 postgres:
-	docker run --name postgres17 --network bank-network -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:17-alpine
+	docker run --name simplebank-postgres-1 --network bank-network -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:17-alpine
 
 createdb: 
-	docker exec -it postgres17 createdb --username=root --owner=root simple_bank
+	docker exec -it simplebank-postgres-1 createdb --username=root --owner=root simple_bank
 
 dropdb:
-	docker exec -it postgres17 dropdb simple_bank
+	docker exec -it simplebank-postgres-1 dropdb simple_bank
 
 
 migrateup:
@@ -68,29 +68,48 @@ evans:
 	evans --host localhost --port 9090 -r repl
 
 redis: 
-	docker run --name redis -p 6379:6379 -d redis:7-alpine
+	docker run --name simplebank-redis-1 -p 6379:6379 -d redis:7-alpine
 
-clean_postgres:
-	docker stop postgres17
-	docker remove postgres17
-	docker rmi postgres:17-alpine
-
-clean_redis:
-	docker stop redis
-	docker remove redis
-	docker rmi redis
-	
-
-build_local:
-	make pull_postgres
-	make postgres
-	sleep 1
-	make createdb
-	make migrateup
+generate_code:
 	make sqlc
 	make mock
 	make proto
+
+clean_postgres:
+	docker stop simplebank-postgres-1
+	docker remove simplebank-postgres-1
+	docker rmi postgres:17-alpine
+
+clean_redis:
+	docker stop simplebank-redis-1
+	docker remove simplebank-redis-1
+	docker rmi redis:7-alpine
+
+clean:
+	make migratedown
+	make dropdb
+	make clean_redis
+	make clean_postgres
+	docker network rm bank-network
+
+build:
+	make pull_postgres
 	make pull_redis
+	make network
+	make postgres
 	make redis
-	
-.PHONY: postgres createdb dropdb migrateup migrateup1 migratedown migratedown1 new_migration db_docs db_schema sqlc test server mock proto evans clean_postgres clean_redis build
+	sleep 1
+	make createdb
+	make migrateup
+	go mod tidy
+	make generate_code
+	make test
+
+compose_up:
+	make generate_code
+	docker compose up
+
+compose_down:
+	docker compose down --rmi all
+
+.PHONY:  db_docs db_schema sqlc test server mock proto evans compose_up compose_down build clean generate_code
